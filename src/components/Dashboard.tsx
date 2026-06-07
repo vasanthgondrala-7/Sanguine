@@ -49,9 +49,12 @@ export function AdminDashboard({ user, onLogout }: { user: any, onLogout: () => 
   const [pendingRequests, setPendingRequests] = useState<any[]>([]);
   const [allDonors, setAllDonors] = useState<any[]>([]);
 
+  const fetchHeaders = { 'X-User-Role': adminRole };
+  const fetchPostHeaders = { 'Content-Type': 'application/json', 'X-User-Role': adminRole };
+
   useEffect(() => {
     const fetchReqs = () => {
-      fetch('/api/v1/requests')
+      fetch('/api/v1/requests', { headers: fetchHeaders })
         .then(r => r.json())
         .then(d => {
            if (d.status === 'success') setPendingRequests(d.data);
@@ -59,7 +62,7 @@ export function AdminDashboard({ user, onLogout }: { user: any, onLogout: () => 
     };
     
     const fetchDonors = () => {
-      fetch('/api/v1/donors')
+      fetch('/api/v1/donors', { headers: fetchHeaders })
         .then(r => r.json())
         .then(d => {
            if (d.status === 'success') setAllDonors(d.data);
@@ -130,7 +133,7 @@ export function AdminDashboard({ user, onLogout }: { user: any, onLogout: () => 
        const start = Date.now();
        const res = await fetch('/api/v1/requests/match', {
          method: 'POST',
-         headers: { 'Content-Type': 'application/json' },
+         headers: fetchPostHeaders,
          body: JSON.stringify({ 
            raw_request_text: reqText,
            blood_group: matchBg,
@@ -194,7 +197,7 @@ export function AdminDashboard({ user, onLogout }: { user: any, onLogout: () => 
               const newStatus = totalDispatches > 0 ? '✓ Donor Found' : '❌ Donor Not Found & Searching for Donor';
               fetch('/api/v1/requests/update', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: fetchPostHeaders,
                 body: JSON.stringify({ id: requestId, status: newStatus })
               }).then(() => {
                 setPendingRequests(prev => prev.map(r => r.id === requestId ? { ...r, status: newStatus } : r));
@@ -345,7 +348,7 @@ export function AdminDashboard({ user, onLogout }: { user: any, onLogout: () => 
                               onClick={async () => {
                                 await fetch('/api/v1/requests/delete', {
                                   method: 'POST',
-                                  headers: { 'Content-Type': 'application/json' },
+                                  headers: fetchPostHeaders,
                                   body: JSON.stringify({ id: req.id })
                                 });
                                 setPendingRequests(prev => prev.filter(r => r.id !== req.id));
@@ -593,13 +596,13 @@ export function AdminDashboard({ user, onLogout }: { user: any, onLogout: () => 
                  e.preventDefault();
                  await fetch('/api/v1/auth/register-donor', {
                    method: 'POST',
-                   headers: { 'Content-Type': 'application/json' },
+                   headers: fetchPostHeaders,
                    body: JSON.stringify({...ngoForm, isSignUp: true, hexUserId: 'DONOR-' + Math.random().toString(36).substring(2, 9).toUpperCase()})
                  });
                  setNgoForm({ fullName: '', contactNumber: '', age: '', bloodGroup: 'O+' });
                  
                  // Immediately re-fetch donors
-                 fetch('/api/v1/donors').then(r => r.json()).then(d => {
+                 fetch('/api/v1/donors', { headers: fetchHeaders }).then(r => r.json()).then(d => {
                    if (d.status === 'success') setAllDonors(d.data);
                  });
                }} className="space-y-4 max-w-2xl">
@@ -685,7 +688,7 @@ export function AdminDashboard({ user, onLogout }: { user: any, onLogout: () => 
                             onClick={async () => {
                               await fetch('/api/v1/donors/delete', {
                                 method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
+                                headers: fetchPostHeaders,
                                 body: JSON.stringify({ id: d.user_id })
                               });
                               setAllDonors(prev => prev.filter(donor => donor.user_id !== d.user_id));
@@ -728,14 +731,14 @@ export function AdminDashboard({ user, onLogout }: { user: any, onLogout: () => 
                  e.preventDefault();
                  const res = await fetch('/api/v1/requests', {
                    method: 'POST',
-                   headers: { 'Content-Type': 'application/json' },
+                   headers: fetchPostHeaders,
                    body: JSON.stringify(reqForm)
                  });
                  const json = await res.json();
                  if (json.status === 'success') {
                     if (json.data && json.data.duplicate) {
                        setDispatchLogs(prev => [[new Date().toLocaleTimeString(), 'SYSTEM', json.data.message], ...prev]);
-                    } else if (json.data && json.data.success) {
+                    } else if (json.data && json.data.data) {
                        setPendingRequests(prev => [json.data.data, ...prev]);
                     } else {
                        setPendingRequests(prev => [json.data, ...prev]);
@@ -806,7 +809,7 @@ export function AdminDashboard({ user, onLogout }: { user: any, onLogout: () => 
 
                  await fetch('/api/v1/auth/register-donor', {
                    method: 'POST',
-                   headers: { 'Content-Type': 'application/json' },
+                   headers: fetchPostHeaders,
                    body: JSON.stringify({
                      ...newDonorForm,
                      latitude: lat,
@@ -818,7 +821,7 @@ export function AdminDashboard({ user, onLogout }: { user: any, onLogout: () => 
                  setShowDonorModal(false);
                  setNewDonorForm({ fullName: '', bloodGroup: 'O+', age: '', contactNumber: '', coords: '' });
                  
-                 fetch('/api/v1/donors')
+                 fetch('/api/v1/donors', { headers: fetchHeaders })
                    .then(r => r.json())
                    .then(d => {
                       if (d.status === 'success') setAllDonors(d.data);
