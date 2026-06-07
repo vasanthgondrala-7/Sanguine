@@ -1,20 +1,71 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Sanguine AI Command Center
 
-# Run and deploy your AI Studio app
+A real-time, AI-driven emergency blood orchestration and dispatch platform that bridges hospital requirements with matching donor registries.
 
-This contains everything you need to run your app locally.
+## Core Features
 
-View your app in AI Studio: https://ai.studio/apps/f37fe1d6-eb71-42a7-ba77-309457c87de6
+- **Urgent Patient Request Desk**: Real-time hospital ingestion with built-in strict collision deduplication (Name, Blood Group, Units).
+- **Live Donor Matching Engine**: Multi-criteria mathematical scoring algorithm executing in real-time against active registry data pools.
+- **Intelligent Ingestion Agent**: An AI agentic layer (`AgentOrchestrator`) that intercepts unstructured doctor inputs and extracts precise requirement schemas.
+- **Role-Based Access Control (RBAC)**: Secure multi-tenant view boundaries protecting administrative actions for System Admins, Hospital Coordinators, and NGO Partners via custom header middleware.
 
-## Run Locally
+## System Architecture
 
-**Prerequisites:**  Node.js
+```text
+[Unstructured Input / UI Portal] 
+            │
+            ▼
+ [AgentOrchestrator Logic] 
+            │
+            ▼
+ [Matching Engine Scoring] 
+            │
+            ▼
+[Unified Database Layer (PostgreSQL Pool / Local JSON Fallback Buffer)]
+```
 
+### Dual-Storage Resilience Scheme
+Sanguine employs a robust dual-storage persistence mechanism. When live, it manages real-time database transactions seamlessly. However, to guarantee absolute availability during critical network-down medical events, the system utilizes an `isLocalFallback` mode, falling back to a synchronized localized JSON buffer. 
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+### Bootstrapper Parsing Engine
+During cold starts, the application runs a background CSV bootstrapper parsing engine. It autonomously parses foundational legacy tracker data (`Dataset.csv`), sanitizing coordinates, normalizing blood types, validating constraints, and injecting deduplicated base data configurations directly into memory.
+
+## Technical Stack
+
+- **Frontend**: Vite, React, TypeScript, Tailwind CSS
+- **Backend**: Node.js, Express.js (TypeScript architecture)
+- **AI/Agent Layer**: Built-in orchestration models executing automated extraction.
+- **Database/Persistence**: PostgreSQL (`pg` Pool), localized JSON ledger fallbacks, and foundational dataset configurations.
+
+## Getting Started & Installation
+
+### Prerequisites
+- Node.js (v18 or higher)
+- npm
+
+### 1. Installation
+Clone the repository and install dependencies:
+```bash
+npm install
+```
+
+### 2. Environment Configuration
+Create a `.env` file and configure your environment variables:
+```env
+PORT=3000
+DATABASE_URL=postgres://user:password@host:port/database
+# Include your necessary AI/Agent API keys (e.g., GEMINI_API_KEY)
+```
+
+### 3. Run Development Server
+Run the local full-stack development build (this will run `server.ts` seamlessly with Vite):
+```bash
+npm run dev
+```
+
+### 4. Running Production Build
+Compile to a single Node.js distributable server script and launch it:
+```bash
+npm run build
+npm start
+```
