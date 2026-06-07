@@ -1,0 +1,25 @@
+name: Deploy to EC2 Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Execute Deployment Script via SSH
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            # Navigate to the project directory and invoke the deployment shell script
+            cd /home/ubuntu/sanguine
+            chmod +x deploy.sh
+            ./deploy.sh

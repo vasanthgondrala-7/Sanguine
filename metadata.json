@@ -1,0 +1,8 @@
+{
+  "name": "Sanguine AI Command Center",
+  "description": "An autonomous care coordination platform for Thalassemia patients requiring lifelong transfusions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

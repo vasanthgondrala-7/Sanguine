@@ -1,0 +1,7 @@
+user_id,bridge_id,role,role_status,bridge_status,blood_group,latitude,longitude,donations_till_date,last_contacted_date,last_donation_date,next_eligible_date,bridge_gender,bridge_blood_group,quantity_required,last_transfusion_date,expected_next_transfusion_date
+D-1144,B-991,Volunteer,TRUE,FALSE,O-,37.7749,-122.4194,5,2026-05-01,2025-12-01,2026-02-01,Male,O-,2,2026-05-01,2026-06-01
+D-3321,B-992,Emergency Donor,TRUE,FALSE,A+,37.7850,-122.4000,1,2026-06-01,2026-01-01,2026-03-01,Female,A+,1,2026-05-15,2026-06-15
+D-9912,B-993,Bridge Donor,TRUE,FALSE,O-,37.7600,-122.4300,12,2026-01-01,2025-06-01,2025-09-01,Female,O-,3,2026-04-10,2026-05-10
+D-8821,B-994,Volunteer,FALSE,FALSE,B+,37.8000,-122.4200,3,2026-05-15,2026-05-10,2026-08-10,Male,B+,1,2026-05-20,2026-06-20
+D-4411,B-995,Volunteer,TRUE,FALSE,AB+,37.7900,-122.3900,8,2026-02-15,2025-11-20,2026-02-20,Male,AB+,2,2026-04-05,2026-05-05
+D-5522,B-996,Emergency Donor,TRUE,FALSE,O-,37.7500,-122.4500,0,2026-01-10,2020-01-01,2020-01-01,Female,O+,1,2026-05-25,2026-06-25

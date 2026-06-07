@@ -1,0 +1,50 @@
+{
+  "entities": {
+    "Donor": {
+      "title": "Donor",
+      "description": "A registered blood donor.",
+      "type": "object",
+      "properties": {
+        "user_id": { "type": "string" },
+        "fullName": { "type": "string" },
+        "email": { "type": "string" },
+        "bloodGroup": { "type": "string" },
+        "age": { "type": "number" },
+        "contactNumber": { "type": "string" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "role": { "type": "string" },
+        "role_status": { "type": "boolean" },
+        "donations_till_date": { "type": "number" },
+        "last_contacted_date": { "type": "string" },
+        "next_eligible_date": { "type": "string" }
+      },
+      "required": ["user_id", "fullName", "bloodGroup"]
+    },
+    "PatientRequest": {
+      "title": "PatientRequest",
+      "description": "An urgent blood request.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fullName": { "type": "string" },
+        "bloodGroup": { "type": "string" },
+        "requiredUnits": { "type": "number" },
+        "urgency": { "type": "string" },
+        "status": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "bloodGroup", "requiredUnits", "status"]
+    }
+  },
+  "firestore": {
+    "/donors/{donorId}": {
+      "schema": { "$ref": "entities/Donor" },
+      "description": "Collection of all donors."
+    },
+    "/requests/{requestId}": {
+      "schema": { "$ref": "entities/PatientRequest" },
+      "description": "Collection of all patient requests."
+    }
+  }
+}
