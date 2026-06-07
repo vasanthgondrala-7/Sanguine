@@ -11,9 +11,21 @@ async function startServer() {
   app.use(express.json());
 
   // ==========================================
+  // RBAC Middleware
+  // ==========================================
+  const requirePrivilegedRole = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const role = req.headers['x-user-role'];
+    if (role === 'System Admin' || role === 'Hospital Coordinator' || role === 'NGO Partner') {
+      next();
+    } else {
+      res.status(403).json({ error: "Access denied. Insufficient role permissions." });
+    }
+  };
+
+  // ==========================================
   // ROUTE 1: THE MATHEMATICAL MATCHING ENGINE
   // ==========================================
-  app.post('/api/v1/requests/match', async (req, res) => {
+  app.post('/api/v1/requests/match', requirePrivilegedRole, async (req, res) => {
     try {
       const { raw_request_text, blood_group, urgency } = req.body;
       
@@ -170,7 +182,7 @@ async function startServer() {
     }
   });
 
-  app.get('/api/v1/donors', async (req, res) => {
+  app.get('/api/v1/donors', requirePrivilegedRole, async (req, res) => {
     try {
       const data = await parseDataset();
       res.status(200).json({ status: "success", data });
@@ -179,7 +191,7 @@ async function startServer() {
     }
   });
 
-  app.get('/api/v1/requests', async (req, res) => {
+  app.get('/api/v1/requests', requirePrivilegedRole, async (req, res) => {
     try {
       const data = await getPendingRequests();
       res.status(200).json({ status: "success", data });
@@ -197,7 +209,7 @@ async function startServer() {
     }
   });
 
-  app.post('/api/v1/requests/delete', async (req, res) => {
+  app.post('/api/v1/requests/delete', requirePrivilegedRole, async (req, res) => {
     try {
       await deletePendingRequest(req.body.id);
       res.status(200).json({ status: "success" });
@@ -206,7 +218,7 @@ async function startServer() {
     }
   });
 
-  app.post('/api/v1/requests/update', async (req, res) => {
+  app.post('/api/v1/requests/update', requirePrivilegedRole, async (req, res) => {
     try {
       await updateRequestStatus(req.body.id, req.body.status);
       res.status(200).json({ status: "success" });
@@ -215,7 +227,7 @@ async function startServer() {
     }
   });
 
-  app.post('/api/v1/donors/delete', async (req, res) => {
+  app.post('/api/v1/donors/delete', requirePrivilegedRole, async (req, res) => {
     try {
       await deleteDonorRecord(req.body.id);
       res.status(200).json({ status: "success" });
